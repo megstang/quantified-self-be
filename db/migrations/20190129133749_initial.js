@@ -17,7 +17,7 @@ exports.up = function(knex, Promise) {
       table.timestamps(true,true);
     }),
 
-    knex.schema.createTable('mealFoods', function(table){
+    knex.schema.createTable("mealfoods", function(table){
       table.increments('id').primary();
       table.integer('meal_id').unsigned;
       table.foreign('meal_id').references('meals.id');
