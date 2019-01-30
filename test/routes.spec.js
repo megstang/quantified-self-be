@@ -46,3 +46,18 @@ describe('API Routes', () => {
     done();
   });
 });
+
+describe('API routes without seeds', () => {
+  it('ge api/v1/foods returns empty array if no foods seeded',done=>{
+    chai.request(server)
+    .get('api/v1/foods') //sad path because not seeded
+    .end((err,reponse) => {
+      response.should.have.status(200);
+      response.body.should.be.a('array');
+      response.body[0].should.not.have.property('id')
+      response.body[0].should.not.have.property('name')
+      response.body[0].should.not.have.property('calories')
+    });
+    done();
+  });
+})
