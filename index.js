@@ -29,3 +29,13 @@ app.get('/api/v1/foods', (request, response) => {
       response.status(500).json({ error });
     });
 });
+
+app.get('/api/v1/foods/:id', (request, response) => {
+  database('foods').where('id', request.params.id).select('id', 'name', 'calories')
+    .then((food) => {
+      response.status(200).json(food);
+    })
+    .catch((error) => {
+      response.status(500).json({ error });
+    });
+});
