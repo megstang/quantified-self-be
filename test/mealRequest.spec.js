@@ -25,6 +25,27 @@ describe('Meal Routes', () => {
         throw error;
       });
   });
+  
+  describe('GET /api/v1/meals', () => {
+    it('get api/v1/meals should return meal names and foods', done => {
+      chai.request(server)
+      .get('/api/v1/meals')
+      .end((err, response) => {
+        response.should.have.status(200);
+        response.should.be.html;
+        response.body.should.be.a('array');
+        response.body.count.should.equal(4);
+        response.body[0].should.have.property('id')
+        response.body[0].should.have.property('name')
+        response.body[0].should.have.property('foods')
+        response.body[0].name.should.equal('Breakfast');
+        response.body[0].foods.count.should.equal(3);
+        response.body[0].foods[0].name.should.equal('bagel');
+        response.body[0].foods[0].calories.should.equal(250);
+        response.body[0].foods[0].id.should.equal(1);
+      });
+      done();
+    });
 
 
   describe('GET /api/v1/meals', () => {
@@ -69,6 +90,7 @@ describe('Meal Routes', () => {
     .get('/api/v1/meals/5/foods')
     .end((err,response) => {
       response.should.have.status(404);
+
     });
     done();
   });

@@ -23,7 +23,6 @@ app.listen(app.get('port'), () => {
 });
 
 module.exports = app;
-module.exports = database;
 
 app.get('/api/v1/foods', (request, response) => {
   database('foods').select()
@@ -95,8 +94,7 @@ app.post('/api/v1/meals/:meal_id/foods/:id', (request, response) => {
 
 
 app.delete('/api/v1/foods/:id', (request,response) => {
-  database('mealfoods').where('mealfoods.food_id',request.params.id).del()
-    .then(()=> database('foods').where('id', request.params.id).del())
+  database('foods').where('id', request.params.id).del()
     .then((foods)=> {
       if(foods == 1){
         response.status(204).send()
@@ -138,3 +136,18 @@ app.get('/api/v1/meals/:id/foods', (request,response) => {
     response.status(404).send();
   })
 })
+
+app.delete('/api/v1/meals/:meal_id/foods/:food_id', (request,response) => {
+  var meal = database('meals').where({id: request.params.meal_id})
+  var food = database('foods').where({id: request.params.food_id})
+  database('mealfoods').where('mealfoods.meal_id',request.params.meal_id).where('mealfoods.food_id', request.params.food_id).del()
+    .then(() => {
+        return response.json({message: 'Successfully deleted food item'});
+        response.status(204).json(food);
+      })
+    .catch((error)=> {
+      response.status(404).json({error});
+  });
+
+});
+
