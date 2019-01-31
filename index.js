@@ -45,6 +45,16 @@ app.get('/api/v1/foods/:id', (request, response) => {
     });
 });
 
+app.post('/api/v1/foods', (request, response) => {
+  var food = request.body
+  database('foods').insert(food, 'id')
+    .then((foodItem) => {
+      response.status(201).json({food});
+    })
+    .catch((error) => {
+      response.status(400).json({ error });
+    });
+})
 
 
 app.delete('/api/v1/foods/:id', (request,response) => {
