@@ -23,7 +23,6 @@ app.listen(app.get('port'), () => {
 });
 
 module.exports = app;
-module.exports = database;
 
 app.get('/api/v1/foods', (request, response) => {
   database('foods').select()
@@ -101,17 +100,33 @@ app.patch('/api/v1/foods/:id', (request,response) => {
   });
 });
 
+app.get('/api/v1/meals/:id/foods', (request,response) => {
+  var meal_id = request.params.id;
+  database.raw(`SELECT meals.id, meals.name, array_to_json(array_agg(json_build_object('food', foods.id, 'name', foods.name, 'calories', foods.calories))) AS foods
+  FROM meals
+  JOIN mealfoods ON meals.id = mealfoods.meal_id
+  JOIN foods ON foods.id = mealfoods.food_id
+  WHERE meals.id = ${meal_id}
+  GROUP BY meals.id`)
+  .then((meal) =>{
+    response.status(200).send(meal.rows[0].foods);
+  })
+  .catch((error) => {
+    response.status(404).send();
+  })
+})
+
+
 app.delete('/api/v1/meals/:meal_id/foods/:food_id', (request,response) => {
+  var meal = database('meals').where({id: request.params.meal_id})
+  var food = database('foods').where({id: request.params.food_id})
   database('mealfoods').where('mealfoods.meal_id',request.params.meal_id).where('mealfoods.food_id', request.params.food_id).del()
-    .then((foods)=> {
-      if(foods == 1){
-        response.status(204).send()
-      }
-      else{
-        response.status(404).json({error})
-      }
-    })
-  .catch((error)=> {
-    response.status(500).json({error})
+    .then(() => {
+        return response.json({message: 'Successfully deleted food item'});
+        response.status(204).json(food);
+      })
+    .catch((error)=> {
+      response.status(404).json({error});
   });
+
 });
