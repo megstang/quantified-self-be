@@ -122,3 +122,19 @@ app.patch('/api/v1/foods/:id', (request,response) => {
     response.status(400).send();
   });
 });
+
+app.get('/api/v1/meals/:id/foods', (request,response) => {
+  var meal_id = request.params.id;
+  database.raw(`SELECT meals.id, meals.name, array_to_json(array_agg(json_build_object('food', foods.id, 'name', foods.name, 'calories', foods.calories))) AS foods
+  FROM meals
+  JOIN mealfoods ON meals.id = mealfoods.meal_id
+  JOIN foods ON foods.id = mealfoods.food_id
+  WHERE meals.id = ${meal_id}
+  GROUP BY meals.id`)
+  .then((meal) =>{
+    response.status(200).send(meal.rows[0].foods);
+  })
+  .catch((error) => {
+    response.status(404).send();
+  })
+})

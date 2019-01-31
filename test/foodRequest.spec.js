@@ -75,6 +75,7 @@ describe('API Routes', () => {
       response.body[0].id.should.equal(2)
     })
     done();
+
   });
 
   it('post /api/v1/foods should return a 201 indicating the food has been added', done => {
@@ -88,12 +89,23 @@ describe('API Routes', () => {
     });
     done();
   });
+
+  it('patch /api/v1/foods/:id should return the updated item', done => {
+    chai.request(server)
+    .patch('/api/v1/foods/1')
+    .end((err,response) => {
+      response.should.have.status(200);
+      response.body[0].should.have.property('name');
+      response.body[0].should.have.property('calories');
+    })
+    done();
+  })
 });
 
 describe('API routes without seeds', () => {
   it('get api/v1/foods returns empty array if no foods seeded',done=>{
     chai.request(server)
-    .get('/api/v1/foods') //sad path because not seeded
+    .get('api/v1/foods') //sad path because not seeded
     .end((err,response) => {
       response.should.have.status(200);
       response.body.should.be.a('array');
