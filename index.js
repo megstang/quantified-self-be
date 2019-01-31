@@ -59,7 +59,7 @@ app.get('/api/v1/foods/:id', (request, response) => {
   .catch((error) => {
     response.status(400).json({ error });
   });
-});  
+});
 
 app.post('/api/v1/foods', (request, response) => {
   var food = request.body
@@ -74,8 +74,7 @@ app.post('/api/v1/foods', (request, response) => {
 
 
 app.delete('/api/v1/foods/:id', (request,response) => {
-  database('mealfoods').where('mealfoods.food_id',request.params.id).del()
-    .then(()=> database('foods').where('id', request.params.id).del())
+  database('foods').where('id', request.params.id).del()
     .then((foods)=> {
       if(foods == 1){
         response.status(204).send()
