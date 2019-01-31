@@ -72,6 +72,27 @@ app.post('/api/v1/foods', (request, response) => {
     });
 })
 
+app.post('/api/v1/meals/:meal_id/foods/:id', (request, response) => {
+  var meal_id = request.params.meal_id
+  var id = request.params.id
+  var meals = {1: 'Breakfast', 2: 'Lunch', 3: 'Dinner', 4: 'Snack'}
+  database('foods').where('id', id).select('id', 'name')
+    .then((food) => {
+      if(food && meals[meal_id]) {
+        var foodName = food[0].name
+        database('mealfoods').insert({food_id: food[0].id, meal_id: meal_id}, 'meal_id')
+        .then((meal_id) => {
+          response.status(201).json({message: `Successfully ${foodName} added to ${meals[meal_id]}`})
+        })
+      } else {
+        response.status(404).json({error})
+      }
+    })
+    .catch((error) => {
+      response.status(404).json({ error });
+    });
+})
+
 
 app.delete('/api/v1/foods/:id', (request,response) => {
   database('mealfoods').where('mealfoods.food_id',request.params.id).del()
