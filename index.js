@@ -116,7 +116,6 @@ app.get('/api/v1/meals/:id/foods', (request,response) => {
   })
 })
 
-
 app.delete('/api/v1/meals/:meal_id/foods/:food_id', (request,response) => {
   var meal = database('meals').where({id: request.params.meal_id})
   var food = database('foods').where({id: request.params.food_id})
@@ -130,3 +129,4 @@ app.delete('/api/v1/meals/:meal_id/foods/:food_id', (request,response) => {
   });
 
 });
+
