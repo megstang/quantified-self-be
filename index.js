@@ -88,3 +88,16 @@ app.delete('/api/v1/foods/:id', (request,response) => {
     response.status(500).json({error})
   });
 });
+
+app.patch('/api/v1/foods/:id', (request,response) => {
+  database('foods').where({ id: request.params.id }).update({ name: request.body.food.name, calories: request.body.food.calories })
+  .then((id) => {
+    return database('foods').where('id', request.params.id)
+  })
+  .then((food) => {
+    response.status(200).send(food);
+  })
+  .catch((error)=> {
+    response.status(400).send();
+  });
+});

@@ -88,6 +88,16 @@ describe('API Routes', () => {
     });
     done();
   });
+
+  it('patch /api/v1/foods/:id should return the updated item', done => {
+    chai.request(server)
+    .patch('/api/v1/foods/1')
+    .end((err,response) => {
+      response.should.have.status(200);
+      response.body[0].should.have.property('name');
+      response.body[0].should.have.property('calories');
+    })
+  })
 });
 
 describe('API routes without seeds', () => {
