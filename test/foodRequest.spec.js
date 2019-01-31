@@ -32,7 +32,7 @@ describe('API Routes', () => {
 
   it('get api/v1/foods should return id, name, calories', done => {
     chai.request(server)
-    .get('api/v1/foods')
+    .get('/api/v1/foods')
     .end((err, response) => {
       response.should.have.status(200);
       response.should.be.html;
@@ -45,6 +45,20 @@ describe('API Routes', () => {
     });
     done();
   });
+
+  it('delete /api/v1/foods should delete a food from db', done => {
+    chai.request(server)
+    .delete('/api/v1/foods/1')
+    .end((err,response) => {
+      response.should.have.status(204);
+    });
+    chai.request(server)
+    .get('/api/v1/foods')
+    .end((err,response) => {
+      response.body[0].id.should.equal(2)
+    })
+  });
+
 });
 
 describe('API routes without seeds', () => {
