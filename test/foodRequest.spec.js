@@ -6,7 +6,6 @@ const server = require('../index'); // go out and reach into server file itself
 const environment = process.env.NODE_ENV || 'development';
 const configuration = require('../knexfile')[environment];
 const database = require('knex')(configuration);
-pry = require('pryjs');
 
 chai.use(chaiHttp);
 
@@ -21,7 +20,7 @@ describe('API Routes', () => {
     .catch(error => {
       throw error;
     });
-    done(); 
+    done();
   });
 
   beforeEach((done) => {
@@ -63,7 +62,21 @@ describe('API Routes', () => {
       response.body[0].name.should.equal('bagel');
       response.body[0].calories.should.equal(250);
     });
+  });
+
+  it('delete /api/v1/foods should delete a food from db', done => {
+    chai.request(server)
+    .delete('/api/v1/foods/1')
+    .end((err,response) => {
+      response.should.have.status(204);
+    });
+    chai.request(server)
+    .get('/api/v1/foods')
+    .end((err,response) => {
+      response.body[0].id.should.equal(2)
+    })
     done();
+
   });
 
   it('post /api/v1/foods should return a 201 indicating the food has been added', done => {
@@ -82,7 +95,7 @@ describe('API Routes', () => {
 describe('API routes without seeds', () => {
   it('get api/v1/foods returns empty array if no foods seeded',done=>{
     chai.request(server)
-    .get('/api/v1/foods') //sad path because not seeded
+    .get('api/v1/foods') //sad path because not seeded
     .end((err,response) => {
       response.should.have.status(200);
       response.body.should.be.a('array');
@@ -92,4 +105,4 @@ describe('API routes without seeds', () => {
     });
     done();
   });
-})
+});
