@@ -1,7 +1,7 @@
 const chai = require('chai'); //require chai library
 const should = chai.should(); //call should so we can use shoulda woulda matchers like capybara
 const chaiHttp = require('chai-http'); //implement requests on server that we have locally
-const server = require('../server'); // go out and reach into server file itself
+const server = require('../index'); // go out and reach into server file itself
 
 const environment = process.env.NODE_ENV || 'development';
 const configuration = require('../knexfile')[environment];
@@ -44,6 +44,5 @@ describe('Meal Routes', () => {
       response.body[0].foods[0].calories.should.equal(250);
       response.body[0].foods[0].id.should.equal(1);
     });
-    eval(pry.it);
   });
 });
