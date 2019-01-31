@@ -30,7 +30,7 @@ describe('API Routes', () => {
       });
   });
 
-  it('get api/v1/foods should return id, name, calories', done => {
+  it('get /api/v1/foods should return id, name, calories', done => {
     chai.request(server)
     .get('/api/v1/foods')
     .end((err, response) => {
@@ -45,13 +45,56 @@ describe('API Routes', () => {
     });
     done();
   });
+
+  it('get /api/v1/foods/:id should return single food with id, name, calories', done => {
+    chai.request(server)
+    .get('/api/v1/foods/1')
+    .end((err, response) => {
+      response.should.have.status(200);
+      response.should.be.html;
+      response.body.should.be.a('array');
+      response.body[0].should.have.property('id')
+      response.body.count.should.equal(1);
+      response.body[0].should.have.property('name')
+      response.body[0].should.have.property('calories')
+      response.body[0].name.should.equal('bagel');
+      response.body[0].calories.should.equal(250);
+    });
+    done();
+  });
+
+  it('delete /api/v1/foods should delete a food from db', done => {
+    chai.request(server)
+    .delete('/api/v1/foods/1')
+    .end((err,response) => {
+      response.should.have.status(204);
+    });
+    chai.request(server)
+    .get('/api/v1/foods')
+    .end((err,response) => {
+      response.body[0].id.should.equal(2)
+    })
+    done();
+  });
+
+  it('post /api/v1/foods should return a 201 indicating the food has been added', done => {
+    chai.request(server)
+    .post('/api/v1/foods/1')
+    .end((err, response) => {
+      response.should.have.status(201);
+      response.should.be.html;
+      response.body[0].should.have.property('message')
+      response.body.message.should.equal("Successfully added Strawberries to Breakfast");
+    });
+    done();
+  });
 });
 
 describe('API routes without seeds', () => {
-  it('ge api/v1/foods returns empty array if no foods seeded',done=>{
+  it('get api/v1/foods returns empty array if no foods seeded',done=>{
     chai.request(server)
-    .get('api/v1/foods') //sad path because not seeded
-    .end((err,reponse) => {
+    .get('/api/v1/foods') //sad path because not seeded
+    .end((err,response) => {
       response.should.have.status(200);
       response.body.should.be.a('array');
       response.body[0].should.not.have.property('id')
@@ -60,4 +103,4 @@ describe('API routes without seeds', () => {
     });
     done();
   });
-})
+});
