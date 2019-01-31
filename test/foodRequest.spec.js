@@ -20,7 +20,6 @@ describe('API Routes', () => {
     .catch(error => {
       throw error;
     });
-    done();
   });
 
   beforeEach((done) => {
@@ -29,7 +28,6 @@ describe('API Routes', () => {
       .catch(error => {
         throw error;
       });
-      done();
   });
 
   it('get /api/v1/foods should return id, name, calories', done => {
@@ -62,6 +60,7 @@ describe('API Routes', () => {
       response.body[0].name.should.equal('bagel');
       response.body[0].calories.should.equal(250);
     });
+    done();
   });
 
   it('delete /api/v1/foods should delete a food from db', done => {
@@ -76,7 +75,6 @@ describe('API Routes', () => {
       response.body[0].id.should.equal(2)
     })
     done();
-
   });
 
   it('post /api/v1/foods should return a 201 indicating the food has been added', done => {
@@ -95,7 +93,7 @@ describe('API Routes', () => {
 describe('API routes without seeds', () => {
   it('get api/v1/foods returns empty array if no foods seeded',done=>{
     chai.request(server)
-    .get('api/v1/foods') //sad path because not seeded
+    .get('/api/v1/foods') //sad path because not seeded
     .end((err,response) => {
       response.should.have.status(200);
       response.body.should.be.a('array');

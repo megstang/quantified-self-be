@@ -35,15 +35,31 @@ app.get('/api/v1/foods', (request, response) => {
     });
 });
 
-app.get('/api/v1/foods/:id', (request, response) => {
-  database('foods').where('id', request.params.id).select('id', 'name', 'calories')
-    .then((food) => {
-      response.status(200).json(food);
+app.get('/api/v1/meals', (request, response) => {
+  database.raw(
+    `SELECT meals.id, meals.name, array_to_json(array_agg(json_build_object('food', foods.id, 'name', foods.name, 'calories', foods.calories))) AS foods
+    FROM meals
+    JOIN mealfoods ON meals.id = mealfoods.meal_id
+    JOIN foods ON foods.id = mealfoods.food_id
+    GROUP BY meals.id`
+  )
+    .then((meals) => {
+      response.status(200).json(meals)
     })
     .catch((error) => {
       response.status(500).json({ error });
     });
 });
+
+app.get('/api/v1/foods/:id', (request, response) => {
+  database('foods').where('id', request.params.id).select('id', 'name', 'calories')
+  .then((food) => {
+    response.status(200).json(food)
+  })
+  .catch((error) => {
+    response.status(400).json({ error });
+  });
+});  
 
 app.post('/api/v1/foods', (request, response) => {
   var food = request.body
