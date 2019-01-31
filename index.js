@@ -21,7 +21,7 @@ module.exports = app;
 module.exports = database;
 
 app.get('/api/v1/foods', (request, response) => {
-  database('foods').insert()
+  database('foods').select()
     .then((foods) => {
       response.status(200).json(foods);
     })
