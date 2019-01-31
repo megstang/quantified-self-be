@@ -57,6 +57,8 @@ describe('API Routes', () => {
     .end((err,response) => {
       response.body[0].id.should.equal(2)
     })
+    done();
+    
   });
 
 });
