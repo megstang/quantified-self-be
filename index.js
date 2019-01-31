@@ -100,3 +100,18 @@ app.patch('/api/v1/foods/:id', (request,response) => {
     response.status(400).send();
   });
 });
+
+app.delete('/api/v1/meals/:meal_id/foods/:food_id', (request,response) => {
+  database('mealfoods').where('mealfoods.meal_id',request.params.meal_id).where('mealfoods.food_id', request.params.food_id).del()
+    .then((foods)=> {
+      if(foods == 1){
+        response.status(204).send()
+      }
+      else{
+        response.status(404).json({error})
+      }
+    })
+  .catch((error)=> {
+    response.status(500).json({error})
+  });
+});
