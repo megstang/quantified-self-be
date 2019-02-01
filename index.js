@@ -18,6 +18,8 @@ app.use(function (request, response, done) {
   done()
 })
 
+pry = require('pryjs')
+
 app.listen(app.get('port'), () => {
   console.log(`${app.locals.title} is running on ${app.get('port')}.`);
 });
@@ -64,7 +66,7 @@ app.post('/api/v1/foods', (request, response) => {
   var food = request.body
   database('foods').insert(food, 'id')
     .then((foodItem) => {
-      response.status(201).json({food});
+      response.status(201).json({message: 'Successfully added food item'});
     })
     .catch((error) => {
       response.status(400).json({ error });
@@ -96,11 +98,11 @@ app.post('/api/v1/meals/:meal_id/foods/:id', (request, response) => {
 app.delete('/api/v1/foods/:id', (request,response) => {
   database('foods').where('id', request.params.id).del()
     .then((foods)=> {
-      if(foods == 1){
+      if(foods == 0) {
         response.status(204).send()
       }
       else{
-        response.status(404).json({error})
+        response.status(500).send()
       }
     })
   .catch((error)=> {
@@ -111,7 +113,7 @@ app.delete('/api/v1/foods/:id', (request,response) => {
 app.patch('/api/v1/foods/:id', (request,response) => {
   database('foods').where({ id: request.params.id }).update({ name: request.body.food.name, calories: request.body.food.calories })
   .then((id) => {
-    return database('foods').where('id', request.params.id)
+    return database('foods').where('id', request.params.id);
   })
   .then((food) => {
     response.status(200).send(food);
@@ -150,4 +152,3 @@ app.delete('/api/v1/meals/:meal_id/foods/:food_id', (request,response) => {
   });
 
 });
-
