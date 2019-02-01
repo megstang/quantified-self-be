@@ -103,15 +103,11 @@ describe('API Routes', () => {
 
 
 describe('API routes without seeds', () => {
-  it('get api/v1/foods returns empty array if no foods seeded',done=>{
+  it('get api/v1/foods returns error if no foods seeded',done=>{
     chai.request(server)
     .get('api/v1/foods') //sad path because not seeded
     .end((err,response) => {
-      response.should.have.status(200);
-      response.body.should.be.a('array');
-      response.body[0].should.not.have.property('id')
-      response.body[0].should.not.have.property('name')
-      response.body[0].should.not.have.property('calories')
+      response.should.have.status(404);
     });
     done();
   });
