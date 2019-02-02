@@ -18,8 +18,6 @@ app.use(function (request, response, done) {
   done()
 })
 
-pry = require('pryjs')
-
 app.listen(app.get('port'), () => {
   console.log(`${app.locals.title} is running on ${app.get('port')}.`);
 });

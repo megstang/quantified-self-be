@@ -1,5 +1,3 @@
-require('pryjs')
-
 exports.seed = function(knex, Promise) {
   return knex.raw('TRUNCATE mealfoods RESTART IDENTITY CASCADE')
     .then(() => {

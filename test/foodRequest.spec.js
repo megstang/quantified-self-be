@@ -8,7 +8,6 @@ const configuration = require('../knexfile')[environment];
 const database = require('knex')(configuration);
 
 chai.use(chaiHttp);
-pry = require('pryjs')
 
 describe('API Routes', () => {
   before((done) => {
