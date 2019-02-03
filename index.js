@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
 const bodyParser = require('body-parser');
 
 const environment = process.env.NODE_ENV || 'development';
@@ -11,12 +12,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set('port', process.env.PORT || 3000);
 app.locals.title = 'snacktrack';
 
-app.use(function (request, response, done) {
-  response.header('Access-Control-Allow-Origin', '*')
-  response.header('Access-Control-Allow-Methods', '*')
-  response.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
-  done()
-})
+app.use(cors())
 
 app.listen(app.get('port'), () => {
   console.log(`${app.locals.title} is running on ${app.get('port')}.`);
